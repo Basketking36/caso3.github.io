@@ -1,0 +1,189 @@
+html
+
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventario Biblioteca</title>
+
+</head>
+
+<body>
+
+ 
+
+    <h1>Gestión de Inventario de Biblioteca</h1>
+
+ 
+
+    <div id="search-book-section">
+
+        <h2>Consultar Disponibilidad</h2>
+
+        <input type="text" id="book-title" placeholder="Título o ISBN del libro">
+
+        <button onclick="searchBook()">Buscar</button>
+
+        <p id="book-status"></p>
+
+    </div>
+
+ 
+
+    <div id="add-book-section">
+
+        <h2>Agregar Nuevo Libro</h2>
+
+        <input type="text" id="new-book-title" placeholder="Título">
+
+        <input type="text" id="new-book-author" placeholder="Autor">
+
+        <input type="text" id="new-book-isbn" placeholder="ISBN">
+
+        <button onclick="addBook()">Agregar Libro</button>
+
+        <p id="add-status"></p>
+
+    </div>
+
+ 
+
+    <script>
+
+        let inventory = [];
+
+ 
+
+        function searchBook() {
+
+            let titleOrIsbn = document.getElementById("book-title").value;
+
+            let book = inventory.find(b => b.title === titleOrIsbn || b.isbn === titleOrIsbn);
+
+            let status = document.getElementById("book-status");
+
+ 
+
+            if (book) {
+
+                status.textContent = book.available ? "Disponible" : "Prestado";
+
+            } else {
+
+                status.textContent = "";
+
+                          }
+
+        }
+
+ 
+
+        function addBook() {
+
+            let title = document.getElementById("new-book-title").value;
+
+            let author = document.getElementById("new-book-author").value;
+
+            let isbn = document.getElementById("new-book-isbn").value;
+
+ 
+
+            let newBook = {
+
+                title: title,
+
+                author: author,
+
+                isbn: isbn,
+
+                available: true
+
+            };
+
+            inventory.push(newBook);
+
+            
+
+        }
+
+ 
+
+        function updateBook(isbn, newTitle, newAuthor) {
+
+            let book = inventory.find(b => b.isbn === isbn);
+
+ 
+
+            if (book) {
+
+                book.title = newTitle;
+
+                book.author = newAuthor;
+
+                
+
+            }
+
+        }
+
+ 
+
+        function markAsBorrowed(isbn) {
+
+            let book = inventory.find(b => b.isbn === isbn);
+
+ 
+
+            if (book && book.available) {
+
+                book.available = false;
+
+                book.borrowedDate = new Date();
+
+                
+
+            }
+
+        }
+
+ 
+
+        function viewBorrowHistory(isbn) {
+
+            let book = inventory.find(b => b.isbn === isbn);
+
+            let historySection = document.getElementById("borrow-history");
+
+ 
+
+            if (book && book.borrowHistory) {
+
+                historySection.innerHTML = book.borrowHistory.map(entry =>
+
+                    `<p>${entry.user} - ${entry.dateBorrowed} / ${entry.dateReturned}</p>`
+
+                ).join('');
+
+            } else {
+
+                historySection.innerHTML = "";
+
+               
+
+            }
+
+        }
+
+    </script>
+
+ 
+
+</body>
+
+</html>
